@@ -17,5 +17,9 @@ int tile_get(Tile *t)
 
 void tile_dump(Tile *t)
 {
-  printf("~%4d~\n", t->value);
+  if (t!=NULL) {
+    printf("~~%4d~~", t->value);
+  } else {
+    printf("**NULL**");
+  }
 }
