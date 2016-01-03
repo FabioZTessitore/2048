@@ -17,5 +17,6 @@ void board_init(Board*);
 void board_dump(Board*);
 void board_destroy(Board*);
 IntList* board_get_freepos(Board*);
+int board_some_cell_empty(Board*);
 
 #endif

@@ -37,6 +37,11 @@ IntList* board_get_freepos(Board *b)
   return &(b->freepos);
 }
 
+int board_some_cell_empty(Board *b)
+{
+  return ( (b->freepos).size>0 );
+}
+
 void board_dump(Board *b)
 {
   int i, j;
