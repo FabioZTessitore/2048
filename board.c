@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
+#include "random.h"
 
 #define BOARD_SIZE 4
 #define BOARD_CELL_SIZE 8
@@ -12,7 +13,7 @@ void board_init(Board *b)
 {
   int i;
 
-  (b->freepos).size = 0;
+  intlist_clear(&(b->freepos));
 
   for (i=0; i<SIZE*SIZE; i++) {
     b->cells[i] = NULL;
@@ -34,12 +35,43 @@ void board_destroy(Board *b)
 
 IntList* board_get_freepos(Board *b)
 {
+  int i;
+
+  intlist_clear(&(b->freepos));
+
+  for (i=0; i<SIZE*SIZE; i++) {
+    if (b->cells[i] == NULL) {
+      intlist_push(&(b->freepos), i);
+    }
+  }
+
   return &(b->freepos);
 }
 
 int board_some_cell_empty(Board *b)
 {
   return ( (b->freepos).size>0 );
+}
+
+Tile *board_get(Board *b, int cell_index)
+{
+  return b->cells[cell_index];
+}
+
+void board_set(Board *b, int cell_index, Tile *t)
+{
+  b->cells[cell_index] = t;
+}
+
+void board_add_tile(Board *b)
+{
+  int min = 0;
+  int max = (b->freepos).size;
+  int cell = random_between(min, max);
+  Tile *t = (Tile*)malloc(sizeof(Tile));
+  t->value = 2;
+
+  board_set(b, cell, t);
 }
 
 void board_dump(Board *b)

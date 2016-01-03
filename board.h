@@ -18,5 +18,8 @@ void board_dump(Board*);
 void board_destroy(Board*);
 IntList* board_get_freepos(Board*);
 int board_some_cell_empty(Board*);
+Tile *board_get(Board*, int cell_index);
+void board_set(Board*, int cell_index, Tile*);
+void board_add_tile(Board *);
 
 #endif
