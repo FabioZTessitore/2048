@@ -10,5 +10,7 @@ int main()
   board_dump(&game_board);
   putchar('\n');
 
+  board_destroy(&game_board);
+
   return 0;
 }
