@@ -32,6 +32,11 @@ void board_destroy(Board *b)
   }
 }
 
+IntList* board_get_freepos(Board *b)
+{
+  return &(b->freepos);
+}
+
 void board_dump(Board *b)
 {
   int i, j;

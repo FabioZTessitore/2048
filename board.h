@@ -16,5 +16,6 @@ typedef struct board Board;
 void board_init(Board*);
 void board_dump(Board*);
 void board_destroy(Board*);
+IntList* board_get_freepos(Board*);
 
 #endif
