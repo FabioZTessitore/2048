@@ -33,3 +33,13 @@ void intlist_dump(IntList* il)
   }
   printf("]\n");
 }
+
+int intlist_get(IntList *il, int index)
+{
+  if (index<0 || index>=il->size) {
+    fprintf(stderr, "intlist: index of ouf bound\n");
+    exit(-1);
+  }
+
+  return il->values[index];
+}

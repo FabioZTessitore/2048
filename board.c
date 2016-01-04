@@ -67,7 +67,7 @@ void board_add_tile(Board *b)
 {
   int min = 0;
   int max = (b->freepos).size;
-  int cell = random_between(min, max);
+  int cell = intlist_get(&(b->freepos), random_between(min, max));
   Tile *t = (Tile*)malloc(sizeof(Tile));
   t->value = 2;
 

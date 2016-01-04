@@ -14,5 +14,6 @@ int intlist_length(IntList*);
 void intlist_push(IntList*, int value);
 void intlist_clear(IntList*);
 void intlist_dump(IntList*);
+int intlist_get(IntList*, int index);
 
 #endif
