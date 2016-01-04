@@ -1,3 +1,10 @@
+/* 2048 */
+
+/* versione console */
+
+/* l'input dipende dal sistema utilizzato, se console, ncurses, librerie grafiche ... */
+/* le funzioni di output vanno implementate qui */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
@@ -83,6 +90,8 @@ int main()
     };
     clear_screen();
   } while(board_get_freepos(&game_board) && board_some_cell_empty(&game_board));
+
+  printf("messaggio di fine gioco\n");
   
   board_destroy(&game_board);
 
