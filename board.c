@@ -9,14 +9,22 @@
 void board_print_hborder();
 void board_print_inner_blank();
 
+int board_from_row_col_to_cell_index(int row, int col);
+
+int *can_grow;
+
 void board_init(Board *b)
 {
   int i;
 
+  random_init();
   intlist_clear(&(b->freepos));
+
+  can_grow = (int*)malloc(sizeof(int)*SIZE*SIZE);
 
   for (i=0; i<SIZE*SIZE; i++) {
     b->cells[i] = NULL;
+    *(can_grow+i) = 1;
     intlist_push(&(b->freepos), i);
   }
 }
@@ -31,6 +39,8 @@ void board_destroy(Board *b)
       b->cells[i] = NULL;
     }
   }
+
+  free(can_grow);
 }
 
 IntList* board_get_freepos(Board *b)
@@ -92,7 +102,7 @@ void board_dump(Board *b)
   }
   board_print_hborder();
   putchar('\n');
-  intlist_dump(&(b->freepos));
+  intlist_dump(board_get_freepos(b));
 }
 
 void board_print_hborder()
@@ -115,4 +125,9 @@ void board_print_inner_blank()
   }
   putchar('|');
   putchar('\n');
+}
+
+int board_from_row_col_to_cell_index(int row, int col)
+{
+  return col + row*SIZE;
 }
