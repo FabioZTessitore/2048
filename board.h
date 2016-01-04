@@ -22,5 +22,8 @@ Tile *board_get(Board*, int cell_index);
 void board_set(Board*, int cell_index, Tile*);
 void board_add_tile(Board *);
 void board_tile_up(Board *);
+void board_tile_down(Board *);
+void board_tile_left(Board *);
+void board_tile_right(Board *);
 
 #endif
