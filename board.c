@@ -86,9 +86,15 @@ void board_add_tile(Board *b)
 {
   int min = 0;
   int max = (b->freepos).size;
-  int cell = intlist_get(&(b->freepos), random_between(min, max));
+  int cell;
+  
+  if (!intlist_get(&(b->freepos), random_between(min, max), &cell)) {
+    fprintf(stderr, "board.c\nboard_add_tile\nindice di cella non valido");
+    exit(-1);
+  }
+
   Tile *t = (Tile*)malloc(sizeof(Tile));
-  t->value = 2;
+  *t = tile_make(2);
 
   board_set(b, cell, t);
 }

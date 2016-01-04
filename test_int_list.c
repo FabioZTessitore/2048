@@ -5,7 +5,7 @@ int main()
 {
   IntList il;
 
-  printf("IntList Test\n\n");
+  printf("IntList\n\n");
 
   printf("Appena creata\n");
   intlist_clear(&il);
@@ -27,7 +27,12 @@ int main()
   printf("Check for IntList Overflow\n");
   int i;
   for (i=0; i<MAX_SIZE+MAX_SIZE; i++) {
-    intlist_push(&il, i);
+    if (intlist_push(&il, i) < 0) {
+      break;
+    }
+
+    printf("aggiunto elemento %3d/%d    ", i+1, MAX_SIZE);
+    if ((i+1)%4==0) putchar('\n');
   }
   intlist_dump(&il);
 
