@@ -22,3 +22,6 @@ int_list.o: int_list.c
 
 clean:
 	rm -f *.o test_int_list test_tile test_board
+
+uninstall:
+	rm -f 2048
