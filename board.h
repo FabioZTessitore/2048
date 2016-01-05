@@ -135,11 +135,13 @@ void board_move_tile(Board*, int cell_source, int cell_target);
  * board_tile_left:
  * board_tile_right:
  *
- * spostamento delle tile
+ * spostamento delle tile.
+ * ritornano 1 se e' stato effettuato
+ * almeno un movimento o una promozione
  */
-void board_tile_up(Board *);
-void board_tile_down(Board *);
-void board_tile_left(Board *);
-void board_tile_right(Board *);
+int board_tile_up(Board *);
+int board_tile_down(Board *);
+int board_tile_left(Board *);
+int board_tile_right(Board *);
 
 #endif

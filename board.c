@@ -186,13 +186,14 @@ void board_move_tile(Board *b, int cell_source, int cell_target)
   board_set(b, cell_source, NULL);
 }
 
-void board_tile_up(Board *b)
+int board_tile_up(Board *b)
 {
   int col, row;
   int r;
   int cell_target;
   int cell_source;
   Tile *temp;
+  int moved = 0;
 
   for (col=0; col<SIZE; col++) {
     for (row=1; row<SIZE; row++) {
@@ -210,6 +211,7 @@ void board_tile_up(Board *b)
           r--;
           cell_source = cell_target;
           cell_target = board_coords_to_index(r-1, col);
+          moved = 1;
         }
 
         if (r>0 && board_get_tile_value(b, cell_target) &&
@@ -222,6 +224,7 @@ void board_tile_up(Board *b)
           board_set(b, cell_target, temp);
           board_set(b, cell_source, NULL);
           b->can_grow[cell_target] = 0;
+          moved = 1;
         }
       }
     }
@@ -229,15 +232,18 @@ void board_tile_up(Board *b)
 
   board_grow_reset(b);
   board_update_freepos(b);
+
+  return moved;
 }
 
-void board_tile_down(Board *b)
+int board_tile_down(Board *b)
 {
   int col, row;
   int r;
   int cell_source;
   int cell_target;
   Tile *temp;
+  int moved = 0;
   
   for (col=0; col<SIZE; col++) {
     for (row=SIZE-2; row>=0; row--) {
@@ -255,6 +261,7 @@ void board_tile_down(Board *b)
           r++;
           cell_source = cell_target;
           cell_target = board_coords_to_index(r+1, col);
+          moved = 1;
         }
 
         if (r<SIZE-1 && board_get_tile_value(b, cell_target) &&
@@ -267,6 +274,7 @@ void board_tile_down(Board *b)
           board_set(b, cell_target, temp);
           board_set(b, cell_source, NULL);
           b->can_grow[cell_target] = 0;
+          moved = 1;
         }
       }
     }
@@ -274,15 +282,18 @@ void board_tile_down(Board *b)
 
   board_grow_reset(b);
   board_update_freepos(b);
+
+  return moved;
 }
 
-void board_tile_left(Board *b)
+int board_tile_left(Board *b)
 {
   int cell_source;
   int cell_target;
   int row, col;
   int c;
   Tile *temp;
+  int moved = 0;
   
   for (row=0; row<SIZE; row++) {
     for (col=1; col<SIZE; col++) {
@@ -300,6 +311,7 @@ void board_tile_left(Board *b)
           c--;
           cell_source = cell_target;
           cell_target = board_coords_to_index(row, c-1);
+          moved = 1;
         }
 
         if (c>0 && board_get_tile_value(b, cell_target) &&
@@ -312,6 +324,7 @@ void board_tile_left(Board *b)
           board_set(b, cell_target, temp);
           board_set(b, cell_source, NULL);
           b->can_grow[cell_target] = 0;
+          moved = 1;
         }
       }
     }
@@ -319,15 +332,18 @@ void board_tile_left(Board *b)
 
   board_grow_reset(b);
   board_update_freepos(b);
+
+  return moved;
 }
 
-void board_tile_right(Board *b)
+int board_tile_right(Board *b)
 {
   int cell_target;
   int cell_source;
   int row, col;
   int c;
   Tile *temp;
+  int moved = 0;
   
   for (row=0; row<SIZE; row++) {
     for (col=SIZE-2; col>=0; col--) {
@@ -345,6 +361,7 @@ void board_tile_right(Board *b)
           c++;
           cell_source = cell_target;
           cell_target = board_coords_to_index(row, c+1);
+          moved = 1;
         }
 
         if (c<SIZE-1 && board_get_tile_value(b, cell_target) &&
@@ -357,6 +374,7 @@ void board_tile_right(Board *b)
           board_set(b, cell_target, temp);
           board_set(b, cell_source, NULL);
           b->can_grow[cell_target] = 0;
+          moved = 1;
         }
       }
     }
@@ -364,6 +382,8 @@ void board_tile_right(Board *b)
 
   board_grow_reset(b);
   board_update_freepos(b);
+
+  return moved;
 }
 
 int board_coords_to_index(int row, int col)
