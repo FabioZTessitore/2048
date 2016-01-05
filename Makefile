@@ -1,4 +1,5 @@
 CFLAGS=-Wall -ansi
+LDFLAGS=-lncurses
 
 2048_ncurses: int_list.o random.o tile.o board.o main_ncurses.o
 	$(CC) $(LDFLAGS) $^ -o $@
