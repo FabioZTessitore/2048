@@ -23,7 +23,7 @@ int board_coords_to_index(int row, int col);
  */
 void board_grow_reset(Board *b);
 
-/* board_dstroy_tile:
+/* board_destroy_tile:
  *
  * libera la memoria occupata da una Tile
  */
