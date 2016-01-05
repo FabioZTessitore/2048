@@ -30,10 +30,31 @@ int main()
   curs_set(0);
   raw();
   keypad(stdscr, TRUE);
+  start_color();
+
+#define COLOR_RED_1 1
+#define COLOR_RED_2 2
+#define COLOR_RED_3 3
+#define COLOR_RED_4 4
+#define COLOR_RED_5 5
+#define COLOR_RED_6 6
+
+  init_color(COLOR_RED_1, 1000, 1000, 1000);
+  init_color(COLOR_RED_2, 1000, 800, 800);
+  init_color(COLOR_RED_3, 1000, 600, 600);
+  init_color(COLOR_RED_4, 1000, 400, 400);
+  init_color(COLOR_RED_5, 1000, 400, 200);
+  init_color(COLOR_RED_6, 1000, 0, 0);
+
+  init_pair(1, COLOR_BLACK, COLOR_RED_1);
+  init_pair(2, COLOR_BLACK, COLOR_RED_2);
+  init_pair(3, COLOR_BLACK, COLOR_RED_3);
+  init_pair(4, COLOR_BLACK, COLOR_RED_4);
+  init_pair(5, COLOR_BLACK, COLOR_RED_5);
+  init_pair(6, COLOR_BLACK, COLOR_RED_6);
 
   board_init(&game_board);
   board_add_tile(&game_board);
-
 
   welcome();
 
@@ -127,8 +148,9 @@ void stampa_scacchiera(Board *b)
   int tile_value;
   const int size_cella = 4;
   int row, col;
+  int cod_color = 1;
 
-  row = 10;
+  row = 0;
   col = (COLS-SIZE*size_cella-5)/2;
 
   for (i=0; i<SIZE; i++) {
@@ -141,11 +163,28 @@ void stampa_scacchiera(Board *b)
       cell_index = j + i*SIZE;
       tile_value = board_get_tile_value(b, cell_index);
       if (tile_value>0) {
-        mvprintw(row, col, "|%4d", tile_value);
+        mvaddch(row, col++, '|');
+        if (tile_value >= 1024) {
+          cod_color = 6;
+        } else if (tile_value >= 256) {
+          cod_color = 5;
+        } else if (tile_value >= 64) {
+          cod_color = 4;
+        } else if (tile_value >= 16) {
+          cod_color = 3;
+        } else if (tile_value >= 8) {
+          cod_color = 2;
+        } else {
+          cod_color = 1;
+        }
+        attron(COLOR_PAIR(cod_color));
+        mvprintw(row, col, "%4d", tile_value);
+        attroff(COLOR_PAIR(cod_color));
+        col += 4;
       } else {
         mvprintw(row, col, "|    ");
+        col += 5;
       }
-      col += 5;
     }
     mvprintw(row, col, "|");
     row++;

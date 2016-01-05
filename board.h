@@ -15,7 +15,7 @@
  * a causa della massima dimensione
  * di una IntList (vedi file int_list.h)
  */
-#define SIZE 4
+#define SIZE 10
 
 typedef struct board {
   Tile *cells[SIZE*SIZE];   /* la scacchiera vera e propria
