@@ -2,9 +2,7 @@
 
 ## Descrizione delle branch di sviluppo
 
-- master: sviluppo del modello
-- console: sviluppo dell'IO tramite console
+- master: sviluppo del modello e dell'IO tramite console
 - ncurses: sviluppo dell'IO tramite librerie ncurses
 
-Le branch *console* e *ncurses* vanno di volta in volta
-rebased su *master*
+La branch *ncurses* va di volta in volta rebased su *master*
