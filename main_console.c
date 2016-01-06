@@ -32,26 +32,12 @@ int main()
   keypad(stdscr, TRUE);
   start_color();
 
-#define COLOR_RED_1 1
-#define COLOR_RED_2 2
-#define COLOR_RED_3 3
-#define COLOR_RED_4 4
-#define COLOR_RED_5 5
-#define COLOR_RED_6 6
-
-  init_color(COLOR_RED_1, 1000, 1000, 1000);
-  init_color(COLOR_RED_2, 1000, 800, 800);
-  init_color(COLOR_RED_3, 1000, 600, 600);
-  init_color(COLOR_RED_4, 1000, 400, 400);
-  init_color(COLOR_RED_5, 1000, 400, 200);
-  init_color(COLOR_RED_6, 1000, 0, 0);
-
-  init_pair(1, COLOR_BLACK, COLOR_RED_1);
-  init_pair(2, COLOR_BLACK, COLOR_RED_2);
-  init_pair(3, COLOR_BLACK, COLOR_RED_3);
-  init_pair(4, COLOR_BLACK, COLOR_RED_4);
-  init_pair(5, COLOR_BLACK, COLOR_RED_5);
-  init_pair(6, COLOR_BLACK, COLOR_RED_6);
+  init_pair(1, COLOR_BLACK, COLOR_WHITE);
+  init_pair(2, COLOR_BLACK, COLOR_CYAN);
+  init_pair(3, COLOR_BLACK, COLOR_BLUE);
+  init_pair(4, COLOR_BLACK, COLOR_GREEN);
+  init_pair(5, COLOR_BLACK, COLOR_YELLOW);
+  init_pair(6, COLOR_BLACK, COLOR_RED);
 
   board_init(&game_board);
   board_add_tile(&game_board);
