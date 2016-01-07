@@ -1,6 +1,9 @@
 CFLAGS=-Wall -ansi
 
-2048: int_list.o random.o tile.o board.o main.o
+2048_ncurses: int_list.o random.o tile.o board.o main_ncurses.o
+	$(CC) $(LDFLAGS) $^ -o $@
+
+2048_console: int_list.o random.o tile.o board.o main_console.o
 	$(CC) $(LDFLAGS) $^ -o $@
 
 test: test_int_list test_tile test_board
@@ -14,7 +17,8 @@ test_tile.o: test_tile.c
 test_int_list: test_int_list.o int_list.o
 test_int_list.o: test_int_list.c
 
-main.o: main.c
+main_ncurses.o: main_ncurses.c
+main_console.o: main_console.c
 random.o: random.c
 board.o: board.c
 tile.o: tile.c
