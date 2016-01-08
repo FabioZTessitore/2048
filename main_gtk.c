@@ -18,7 +18,7 @@ quit_activated (GSimpleAction *action,
   return TRUE;
 }
 
-void foo(int ch)
+void move_tiles(int ch)
 {
   int moved = 0;
 
@@ -56,7 +56,7 @@ key_to_board (GtkWidget *widget,
     case 'j':
     case 'k':
     case 'l':
-      foo(ch);
+      move_tiles(ch);
       break;
     default:
       break;
@@ -84,11 +84,10 @@ void create_board_grid()
       } else {
         msg[0] = '\0';
       }
-      /*GtkWidget *a_frame = gtk_frame_new (NULL);*/
+      GtkWidget *a_frame = gtk_frame_new (NULL);
       GtkWidget *a_label = gtk_label_new(msg);
-      /*gtk_container_add(GTK_CONTAINER(a_frame), GTK_WIDGET(a_label));*/
-      /*gtk_grid_attach(GTK_GRID(board_container), a_frame, col, row, 1, 1);*/
-      gtk_grid_attach(GTK_GRID(board_container), a_label, col, row, 1, 1);
+      gtk_container_add(GTK_CONTAINER(a_frame), GTK_WIDGET(a_label));
+      gtk_grid_attach(GTK_GRID(board_container), a_frame, col, row, 1, 1);
     }
   }
   gtk_widget_show_all (window);
@@ -110,7 +109,8 @@ void update_board_labels()
       } else {
         msg[0] = '\0';
       }
-      GtkWidget *a_label = gtk_grid_get_child_at (GTK_GRID(board_container), col, row);
+      GtkWidget *a_frame = gtk_grid_get_child_at (GTK_GRID(board_container), col, row);
+      GtkWidget *a_label = gtk_bin_get_child(GTK_BIN(a_frame));
       gtk_label_set_text(GTK_LABEL(a_label), msg);
     }
   }
