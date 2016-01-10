@@ -1,14 +1,15 @@
 CFLAGS=-Wall -ansi
 LDFLAGS=-lncurses
+PROGRAM=2048
 
 2048_gtk: int_list.o random.o tile.o board.o main_gtk.o
-	$(CC) -o 2048 $^ `pkg-config --libs gtk+-3.0`
+	$(CC) -o $(PROGRAM) $^ `pkg-config --libs gtk+-3.0`
 
 2048_ncurses: int_list.o random.o tile.o board.o main_ncurses.o
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(LDFLAGS) $^ -o $(PROGRAM)
 
 2048_console: int_list.o random.o tile.o board.o main_console.o
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $^ -o $(PROGRAM)
 
 test: test_int_list test_tile test_board
 
