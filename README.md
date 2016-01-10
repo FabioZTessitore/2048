@@ -17,7 +17,24 @@ $ make 2040_console
 ```
 
 #### Compilazione della versione ncurses
+Assicurarsi di avere le librerie ncurses
+```bash
+$ sudo apt-get update
+$ sudo apt-get install libncurses5-dev
+```
+```bash
+$ make 2048_ncurses
+```
+
 #### Compilazione della versione gtk
+Assicurarsi di avere le librerie gtk
+```bash
+$ sudo apt-get update
+$ sudo apt-get install libgtk-3-dev
+```
+```bash
+$ make 2048_gtk
+```
 
 ## Esecuzione
 ```bash
