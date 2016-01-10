@@ -13,7 +13,7 @@ $ git clone https://github.com/FabioZTessitore/2048.git
 
 #### Compilazione della versione console
 ```bash
-$ make 2040_console
+$ make 2048_console
 ```
 
 #### Compilazione della versione ncurses
