@@ -22,6 +22,49 @@ void board_grow_reset(Board *b);
  */
 void board_destroy_tile(Board *b, int cell_index);
 
+/* board_tile_dump:
+ *
+ * stampa per debug di una singola tile
+ */
+void board_tile_dump(Board *, int row, int col);
+
+/* board_get_tile_value:
+ *
+ * restituisce il valore della Tile presente
+ * alla posizione indicata.
+ * Restituisce 0 se non e' presente una Tile.
+ */
+int board_get_tile_value(Board*, int cell_index);
+
+/* board_update_freepos:
+ *
+ * aggiorna la lista delle posizioni libere
+ */
+void board_update_freepos(Board*);
+
+/* board_get_freepos:
+ *
+ * restituisce la lista delle posizioni libere
+ */
+IntList* board_get_freepos(Board*);
+
+
+/* board_some_cell_empty:
+ *
+ * ritorna 1 se c'e' almeno un posto
+ * libero sulla scacchiera
+ */
+int board_some_cell_empty(Board*);
+
+/* board_move_tile:
+ *
+ * sposta una Tile dalla posizione di indice cell_source
+ * alla posizione di indice cell_target.
+ * La cella di posizione cell_target DEVE essere vuota
+ */
+void board_move_tile(Board*, int cell_source, int cell_target);
+
+
 
 
 void board_init(Board *b)
@@ -69,6 +112,12 @@ void board_tile_dump(Board *b, int row, int col)
 void board_dump(Board *b)
 {
   int row, col;
+
+  board_update_freepos(b);
+
+  int freepos = board_get_freepos(b)->size;
+  printf("Numero di celle libere (mediante get_freepos()): %d\n", freepos);
+  printf("Ci sono celle libere? %s\n", board_some_cell_empty(b) ? "si" : "no");
 
   for (row=0; row<SIZE; row++) {
     for (col=0; col<SIZE; col++) {

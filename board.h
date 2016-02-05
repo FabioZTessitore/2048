@@ -54,13 +54,6 @@ void board_init(Board*);
 void board_destroy(Board*);
 
 
-/* board_tile_dump:
- *
- * stampa per debug di una singola tile
- */
-void board_tile_dump(Board *, int row, int col);
-
-
 /* board_dump:
  *
  * stampa per debug
@@ -81,54 +74,12 @@ void board_set(Board*, int cell_index, Tile*);
  */
 Tile *board_get(Board*, int cell_index);
 
-
-/* board_get_tile_value:
- *
- * restituisce il valore della Tile presente
- * alla posizione indicata.
- * Restituisce 0 se non e' presente una Tile.
- */
-int board_get_tile_value(Board*, int cell_index);
-
-
 /* board_add_tile:
  *
  * aggiunge una nuova Tile alla scacchiera
  * in posizione casuale tra quelle libere
  */
 void board_add_tile(Board *);
-
-
-/* board_update_freepos:
- *
- * aggiorna la lista delle posizioni libere
- */
-void board_update_freepos(Board*);
-
-
-/* board_get_freepos:
- *
- * restituisce la lista delle posizioni libere
- */
-IntList* board_get_freepos(Board*);
-
-
-/* board_some_cell_empty:
- *
- * ritorna 1 se c'e' almeno un posto
- * libero sulla scacchiera
- */
-int board_some_cell_empty(Board*);
-
-
-/* board_move_tile:
- *
- * sposta una Tile dalla posizione di indice cell_source
- * alla posizione di indice cell_target.
- * La cella di posizione cell_target DEVE essere vuota
- */
-void board_move_tile(Board*, int cell_source, int cell_target);
-
 
 /* board_tile_up:
  * board_tile_down:
