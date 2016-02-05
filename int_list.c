@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "int_list.h"
 
-void intlist_init(IntList *il, int dimension)
+void intlist_init(IntList *il, int capacity)
 {
   il->size = 0;
-  il->dimension = dimension;
-  il->values = (int*)malloc(sizeof(int)*dimension);
+  il->capacity = capacity;
+  il->values = (int*)malloc(sizeof(int)*capacity);
   if (!il->values) {
     fprintf(stderr, "intlist_init: impossibile allocare memoria");
     exit(-1);
@@ -16,7 +16,7 @@ void intlist_init(IntList *il, int dimension)
 void intlist_destroy(IntList *il)
 {
   il->size = 0;
-  il->dimension = 0;
+  il->capacity = 0;
   if (il->values) {
     free(il->values);
     il->values = NULL;
@@ -30,7 +30,7 @@ void intlist_clear(IntList *il)
 
 int intlist_push(IntList* il, int value)
 {
-  if (il->size >= il->dimension) {
+  if (il->size >= il->capacity) {
     return -1;
   }
 
@@ -55,12 +55,17 @@ int intlist_length(IntList *il)
   return il->size;
 }
 
+int intlist_capacity(IntList *il)
+{
+  return il->capacity;
+}
+
 void intlist_dump(IntList *il)
 {
   int i;
 
-  printf("Dimensione allocata: %d\n", il->dimension);
-  printf("Dimensione attuale: %d\n", il->size);
+  printf("Dimensione allocata: %d\n", intlist_capacity(il));
+  printf("Dimensione attuale: %d\n", intlist_length(il));
   printf("[ ");
   for (i=0; i<il->size; i++) {
     printf("%d ", il->values[i]);

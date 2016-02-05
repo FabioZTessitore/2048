@@ -1,24 +1,30 @@
 #include <stdio.h>
 #include "int_list.h"
 
-#define MAX_SIZE 16
-
 int main()
 {
   IntList il;
+  int capacity;
+  int i;
 
   printf("IntList\n\n");
 
+  do {
+    printf("Numero di elementi da allocare (0-100)\n");
+    printf("? ");
+    scanf("%d", &capacity);
+  } while (capacity<0 || capacity>100);
+
   printf("Inizializzazione della IntList ...\n");
-  intlist_init(&il, MAX_SIZE);
+  intlist_init(&il, capacity);
   printf("IntList creata\n");
   intlist_dump(&il);
   putchar('\n');
 
-  printf("Aggiunge gli elementi 1, 2, 3\n");
-  intlist_push(&il, 1);
-  intlist_push(&il, 2);
-  intlist_push(&il, 3);
+  printf("Aggiunge elementi\n");
+  for (i=0; i<capacity; i++) {
+    intlist_push(&il, i+1);
+  }
   intlist_dump(&il);
   putchar('\n');
 
@@ -28,13 +34,12 @@ int main()
   putchar('\n');
 
   printf("Check for IntList Overflow\n");
-  int i;
-  for (i=0; i<MAX_SIZE+MAX_SIZE; i++) {
+  for (i=0; i<capacity+capacity; i++) {
     if (intlist_push(&il, i) < 0) {
       break;
     }
 
-    printf("aggiunto elemento %3d/%d    ", i+1, MAX_SIZE);
+    printf("aggiunto elemento %3d/%d    ", i+1, capacity);
     if ((i+1)%4==0) putchar('\n');
   }
   intlist_dump(&il);

@@ -14,7 +14,7 @@
 
 typedef struct intlist {
   int *values;
-  int dimension;
+  int capacity;
   int size;
 } IntList;
 
@@ -23,10 +23,10 @@ typedef struct intlist {
  *
  * inizializza la IntList creando
  * un vettore di interi di lunghezza
- * pari a dimension.
+ * pari a capacity.
  * Azzera size
  */
-void intlist_init(IntList *il, int dimension);
+void intlist_init(IntList *il, int capacity);
 
 
 /* intlist_destroy:
@@ -68,6 +68,13 @@ int intlist_get(IntList *il, int index, int *value);
  * (ritorna size, non ricalcola)
  */
 int intlist_length(IntList *il);
+
+
+/* intlist_capacity:
+ *
+ * restituisce la dimensione allocata della IntList
+ */
+int intlist_capacity(IntList *il);
 
 
 /* intlist_dump:

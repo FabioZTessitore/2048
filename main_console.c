@@ -22,12 +22,20 @@ int main()
   Board game_board;
   int direction;
   int moved = 0;
+  int size;
+  const int size_min = 2;
+  const int size_max = 15;
 
   printf("\n\n\n2048 ... il gioco!\n");
   printf("******************\n\n");
 
+  do {
+    printf("Numero di celle per lato (%d-%d):\n", size_min, size_max);
+    printf("? ");
+    scanf("%d", &size);
+  } while (size<size_min || size>size_max);
 
-  board_init(&game_board);
+  board_init(&game_board, size);
   board_add_tile(&game_board);
 
   do {
@@ -115,14 +123,14 @@ void stampa_scacchiera(Board *b)
   int tile_value;
   const int size_cella = 4;
 
-  for (row=0; row<SIZE; row++) {
+  for (row=0; row<b->size; row++) {
     
-    stampa_lato_orizzontale(SIZE, size_cella);
+    stampa_lato_orizzontale(b->size, size_cella);
 
     printf("   ");
-    for (col=0; col<SIZE; col++) {
-      cell_index = col + row*SIZE;
-      tile_value = board_get_tile_value(b, cell_index);
+    for (col=0; col<b->size; col++) {
+      cell_index = col + row*b->size;
+      tile_value = tile_get(board_get(b, cell_index));
       if (tile_value>0) {
         printf("|%4d", tile_value);
       } else {
@@ -132,7 +140,7 @@ void stampa_scacchiera(Board *b)
     printf("|\n");
 
   }
-  stampa_lato_orizzontale(SIZE, size_cella);
+  stampa_lato_orizzontale(b->size, size_cella);
   putchar('\n');
 }
 void stampa_lato_orizzontale(int n_celle, int size_cella)

@@ -13,7 +13,7 @@
 #define RIGHT 4
 #define HALT 5
 
-void welcome();
+int welcome(int size_min, int size_max);
 void stampa_lato_orizzontale(int, int, int, int);
 void stampa_scacchiera(Board *b);
 int user_choice();
@@ -24,10 +24,11 @@ int main()
   int direction;
   int moved = 0;
   int halted = 0;
+  const int size_min = 2;
+  const int size_max = 15;
+  int size = 4;
 
   initscr();
-  noecho();
-  curs_set(0);
   raw();
   keypad(stdscr, TRUE);
   start_color();
@@ -39,10 +40,15 @@ int main()
   init_pair(5, COLOR_BLACK, COLOR_YELLOW);
   init_pair(6, COLOR_BLACK, COLOR_RED);
 
-  board_init(&game_board);
-  board_add_tile(&game_board);
+  do {
+    size = welcome(size_min, size_max);
+  } while (size<size_min || size>size_max);
 
-  welcome();
+  curs_set(0);
+  noecho();
+
+  board_init(&game_board, size);
+  board_add_tile(&game_board);
 
   do {
     board_add_tile(&game_board);
@@ -82,37 +88,49 @@ int main()
   return 0;
 }
 
-void welcome()
+int welcome(int size_min, int size_max)
 {
   int row = 5;
   int col = 0;
-  char *msg;
+  char msg[80];
   int msg_len;
+  int size;
 
-  msg = "2048 - Il Gioco";
+  strcpy(msg, "2048 - Il Gioco");
   msg_len = strlen(msg);
   col = (COLS-msg_len)/2;
   mvprintw(row, col, msg);
 
   msg_len = 8;
   col = (COLS-msg_len)/2;
-  msg = "h - LEFT";
+  strcpy(msg, "h - LEFT");
   mvprintw(row+2, col, msg);
-  msg = "j - DOWN";
+  strcpy(msg, "j - DOWN");
   mvprintw(row+3, col, msg);
-  msg = "k - UP";
+  strcpy(msg, "k - UP");
   mvprintw(row+4, col, msg);
-  msg = "l - RIGHT";
+  strcpy(msg, "l - RIGHT");
   mvprintw(row+5, col, msg);
 
+  sprintf(msg, "Numero di celle per lato (%d-%d): ", size_min, size_max);
+  msg_len = strlen(msg);
+  col = (COLS-msg_len)/2;
+  mvprintw(row+8, col, msg);
+  mvscanw(row+8, col+msg_len+2, "%d", &size);
+  /*
   msg = "(Premi un tasto per iniziare)";
   msg_len = strlen(msg);
   col = (COLS-msg_len)/2;
   mvprintw(row+8, col, msg);
+  */
 
   refresh();
+  /*
   getch();
+  */
   clear();
+
+  return size;
 }
 
 void stampa_lato_orizzontale(int row, int col, int n_celle, int size_cella)
@@ -137,17 +155,17 @@ void stampa_scacchiera(Board *b)
   int cod_color = 1;
 
   row = 0;
-  col = (COLS-SIZE*size_cella-5)/2;
+  col = (COLS-b->size*size_cella-5)/2;
 
-  for (i=0; i<SIZE; i++) {
-    col = (COLS-SIZE*size_cella-5)/2;
+  for (i=0; i<b->size; i++) {
+    col = (COLS-b->size*size_cella-5)/2;
     
-    stampa_lato_orizzontale(row, col, SIZE, size_cella);
+    stampa_lato_orizzontale(row, col, b->size, size_cella);
     row++;
 
-    for (j=0; j<SIZE; j++) {
-      cell_index = j + i*SIZE;
-      tile_value = board_get_tile_value(b, cell_index);
+    for (j=0; j<b->size; j++) {
+      cell_index = j + i*b->size;
+      tile_value = tile_get(board_get(b, cell_index));
       if (tile_value>0) {
         mvaddch(row, col++, '|');
         if (tile_value >= 1024) {
@@ -176,8 +194,8 @@ void stampa_scacchiera(Board *b)
     row++;
 
   }
-  col = (COLS-SIZE*size_cella-5)/2;
-  stampa_lato_orizzontale(row, col, SIZE, size_cella);
+  col = (COLS-b->size*size_cella-5)/2;
+  stampa_lato_orizzontale(row, col, b->size, size_cella);
   row++;
 
   refresh();

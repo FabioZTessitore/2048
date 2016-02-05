@@ -3,38 +3,11 @@
 #include "board.h"
 #include "random.h"
 
-/* board_coords_to_index:
- *
- * converte una coppia di coordinate (row, col)
- * in un indice lineare.
- */
-int board_coords_to_index(int row, int col);
-
-/* board_grow_reset:
- *
- * ripristina flag di promozione Tile
- */
-void board_grow_reset(Board *b);
-
 /* board_destroy_tile:
  *
  * libera la memoria occupata da una Tile
  */
 void board_destroy_tile(Board *b, int cell_index);
-
-/* board_tile_dump:
- *
- * stampa per debug di una singola tile
- */
-void board_tile_dump(Board *, int row, int col);
-
-/* board_get_tile_value:
- *
- * restituisce il valore della Tile presente
- * alla posizione indicata.
- * Restituisce 0 se non e' presente una Tile.
- */
-int board_get_tile_value(Board*, int cell_index);
 
 /* board_update_freepos:
  *
@@ -42,41 +15,22 @@ int board_get_tile_value(Board*, int cell_index);
  */
 void board_update_freepos(Board*);
 
-/* board_get_freepos:
+/* board_reset_grow:
  *
- * restituisce la lista delle posizioni libere
+ * resetta le flag can_grow delle tessere
  */
-IntList* board_get_freepos(Board*);
+void board_reset_grow(Board*);
 
-
-/* board_some_cell_empty:
- *
- * ritorna 1 se c'e' almeno un posto
- * libero sulla scacchiera
- */
-int board_some_cell_empty(Board*);
-
-/* board_move_tile:
- *
- * sposta una Tile dalla posizione di indice cell_source
- * alla posizione di indice cell_target.
- * La cella di posizione cell_target DEVE essere vuota
- */
-void board_move_tile(Board*, int cell_source, int cell_target);
-
-
-
-
-void board_init(Board *b)
+void board_init(Board *b, int size)
 {
   int i;
 
-  random_init();
-  intlist_init(&(b->freepos), SIZE*SIZE);
+  b->size = size;
+  intlist_init(&(b->freepos), size*size);
+  b->cells = (Tile**)malloc(sizeof(Tile*)*size*size);
 
-  for (i=0; i<SIZE*SIZE; i++) {
+  for (i=0; i<size*size; i++) {
     board_set(b, i, NULL);
-    b->can_grow[i] = 1;
     intlist_push(&(b->freepos), i);
   }
 }
@@ -86,34 +40,28 @@ void board_destroy_tile(Board *b, int cell_index)
   Tile *t = board_get(b, cell_index);
   
   if (t != NULL) {
-      free(t);
-      t = NULL;
-      board_set(b, cell_index, NULL);
-    }
+    free(t);
+    t = NULL;
+    board_set(b, cell_index, NULL);
+  }
 }
 
 void board_destroy(Board *b)
 {
   int i;
 
-  for (i=0; i<SIZE*SIZE; i++) {
+  for (i=0; i<b->size*b->size; i++) {
     board_destroy_tile(b, i);
   }
 
+  free(b->cells);
   intlist_destroy(&(b->freepos));
-}
-
-void board_tile_dump(Board *b, int row, int col)
-{
-  int cell_index;
-  
-  cell_index = board_coords_to_index(row, col);
-  tile_dump(board_get(b, cell_index));
 }
 
 void board_dump(Board *b)
 {
   int row, col;
+  int cell_index;
 
   board_update_freepos(b);
 
@@ -121,9 +69,11 @@ void board_dump(Board *b)
   printf("Numero di celle libere (mediante get_freepos()): %d\n", freepos);
   printf("Ci sono celle libere? %s\n", board_some_cell_empty(b) ? "si" : "no");
 
-  for (row=0; row<SIZE; row++) {
-    for (col=0; col<SIZE; col++) {
-      board_tile_dump(b, row, col);
+  cell_index = 0;
+  for (row=0; row<b->size; row++) {
+    for (col=0; col<b->size; col++) {
+      tile_dump(board_get(b, cell_index));
+      cell_index++;
     }
     putchar('\n');
   }
@@ -135,40 +85,12 @@ void board_dump(Board *b)
 void board_set(Board *b, int cell_index, Tile *t)
 {
   b->cells[cell_index] = t;
+  board_update_freepos(b);
 }
 
 Tile* board_get(Board *b, int cell_index)
 {
   return b->cells[cell_index];
-}
-
-int board_get_tile_value(Board *b, int cell_index)
-{
-  Tile *t = board_get(b, cell_index);
-  
-  if (t==NULL) {
-    return 0;
-  }
-
-  return tile_get(t);
-}
-
-void board_add_tile(Board *b)
-{
-  int cell_min = 0;
-  int cell_max = (b->freepos).size;
-  int i = random_between(cell_min, cell_max);
-  int cell;
-  
-  if (!intlist_get(&(b->freepos), i, &cell)) {
-    fprintf(stderr, "board.c\nboard_add_tile\nindice di cella non valido");
-    exit(-1);
-  }
-
-  Tile *t = (Tile*)malloc(sizeof(Tile));
-  *t = tile_make((random_between(0, 100) < 10) ? 4 : 2);
-
-  board_set(b, cell, t);
 }
 
 void board_update_freepos(Board *b)
@@ -177,7 +99,7 @@ void board_update_freepos(Board *b)
 
   intlist_clear(&(b->freepos));
 
-  for (i=0; i<SIZE*SIZE; i++) {
+  for (i=0; i<b->size*b->size; i++) {
     if (board_get(b, i)==NULL) {
       intlist_push(&(b->freepos), i);
     }
@@ -196,8 +118,76 @@ int board_some_cell_empty(Board *b)
 
 void board_move_tile(Board *b, int cell_source, int cell_target)
 {
+  if (board_get(b, cell_target)!=NULL) {
+    fprintf(stderr, "board.c\n"
+        "board_move_tile\n"
+        "cella target non vuota\n");
+    exit(-1);
+  }
+
   board_set(b, cell_target, board_get(b, cell_source));
   board_set(b, cell_source, NULL);
+
+  board_update_freepos(b);
+}
+
+void board_add_tile(Board *b)
+{
+  int index_min = 0;
+  int index_max = (b->freepos).size;
+  int index = random_between(index_min, index_max);
+  int cell_index;
+  
+  if (!intlist_get(&(b->freepos), index, &cell_index)) {
+    fprintf(stderr, "board.c\nboard_add_tile\nindice posizione libera non valido");
+    exit(-1);
+  }
+
+  Tile *t = (Tile*)malloc(sizeof(Tile));
+  *t = tile_make((random_between(0, 100) < 10) ? 4 : 2);
+
+  board_set(b, cell_index, t);
+}
+
+void board_rotate(Board *b)
+{
+  int row, col, cell_index;
+  int qrow, qcol;
+  Tile *q[b->size][b->size];
+
+  cell_index = b->size*b->size-1;
+  qrow = 0;
+  qcol = b->size-1;
+  for (row=b->size-1; row>=0; row--) {
+    for (col=b->size-1; col>=0; col--) {
+      q[qrow][qcol] = board_get(b, cell_index);
+      qrow++;
+      cell_index--;
+    }
+    qrow = 0;
+    qcol--;
+  }
+
+  cell_index = 0;
+  for (row=0; row<b->size; row++) {
+    for (col=0; col<b->size; col++) {
+      board_set(b, cell_index, q[row][col]);
+      cell_index++;
+    }
+  }
+}
+
+void board_reset_grow(Board *b)
+{
+  Tile *t;
+  int cell_index;
+
+  for (cell_index=0; cell_index<b->size*b->size; cell_index++) {
+    t = board_get(b, cell_index);
+    if (t) {
+      tile_reset_can_grow(t);
+    }
+  }
 }
 
 int board_tile_up(Board *b)
@@ -206,95 +196,40 @@ int board_tile_up(Board *b)
   int r;
   int cell_target;
   int cell_source;
-  Tile *temp;
   int moved = 0;
 
-  for (col=0; col<SIZE; col++) {
-    for (row=1; row<SIZE; row++) {
+  for (col=0; col<b->size; col++) {
+    for (row=1; row<b->size; row++) {
 
       r = row;
 
-      cell_source = board_coords_to_index(row, col);
+      cell_source = b->size*row + col;
 
       if (board_get(b, cell_source)!=NULL) {
 
-        cell_target = board_coords_to_index(r-1, col);
+        cell_target = b->size*(r-1) + col;
 
         while (r>0 && board_get(b, cell_target)==NULL) {
           board_move_tile(b, cell_source, cell_target);
           r--;
           cell_source = cell_target;
-          cell_target = board_coords_to_index(r-1, col);
+          cell_target = b->size*(r-1) + col;
           moved = 1;
         }
 
-        if (r>0 && board_get_tile_value(b, cell_target) &&
-            board_get_tile_value(b, cell_target)==board_get_tile_value(b, cell_source) &&
-            b->can_grow[cell_target])
+        if (r>0 && tile_get(board_get(b, cell_target)) &&
+            tile_get(board_get(b, cell_target))==tile_get(board_get(b, cell_source)) &&
+            tile_can_grow(board_get(b, cell_target)))
         {
-          temp = (Tile*)malloc(sizeof(Tile));
-          *temp = tile_make(2*board_get_tile_value(b, cell_target));
-          free(board_get(b, cell_target));
-          board_set(b, cell_target, temp);
-          board_set(b, cell_source, NULL);
-          b->can_grow[cell_target] = 0;
+          tile_double(board_get(b, cell_target));
+          board_destroy_tile(b, cell_source);
           moved = 1;
         }
       }
     }
   }
 
-  board_grow_reset(b);
-  board_update_freepos(b);
-
-  return moved;
-}
-
-int board_tile_down(Board *b)
-{
-  int col, row;
-  int r;
-  int cell_source;
-  int cell_target;
-  Tile *temp;
-  int moved = 0;
-  
-  for (col=0; col<SIZE; col++) {
-    for (row=SIZE-2; row>=0; row--) {
-
-      r = row;
-
-      cell_source = board_coords_to_index(row, col);
-
-      if (board_get(b, cell_source)!=NULL) {
-
-      cell_target = board_coords_to_index(row+1, col);
-
-        while (r<SIZE-1 && board_get(b, cell_target)==NULL) {
-          board_move_tile(b, cell_source, cell_target);
-          r++;
-          cell_source = cell_target;
-          cell_target = board_coords_to_index(r+1, col);
-          moved = 1;
-        }
-
-        if (r<SIZE-1 && board_get_tile_value(b, cell_target) &&
-            board_get_tile_value(b, cell_target)==board_get_tile_value(b, cell_source) &&
-            b->can_grow[cell_target])
-        {
-          temp = (Tile*)malloc(sizeof(Tile));
-          *temp = tile_make(2*tile_get(board_get(b, cell_target)));
-          free(board_get(b, cell_target));
-          board_set(b, cell_target, temp);
-          board_set(b, cell_source, NULL);
-          b->can_grow[cell_target] = 0;
-          moved = 1;
-        }
-      }
-    }
-  }
-
-  board_grow_reset(b);
+  board_reset_grow(b);
   board_update_freepos(b);
 
   return moved;
@@ -302,49 +237,15 @@ int board_tile_down(Board *b)
 
 int board_tile_left(Board *b)
 {
-  int cell_source;
-  int cell_target;
-  int row, col;
-  int c;
-  Tile *temp;
-  int moved = 0;
-  
-  for (row=0; row<SIZE; row++) {
-    for (col=1; col<SIZE; col++) {
+  int moved;
 
-      c = col;
+  board_rotate(b);
+  board_rotate(b);
+  board_rotate(b);
+  moved = board_tile_up(b);
+  board_rotate(b);
 
-      cell_source = board_coords_to_index(row, col);
-
-      if (board_get(b, cell_source)!=NULL) {
-
-        cell_target = board_coords_to_index(row, col-1);
-
-        while (c>0 && board_get(b, cell_target)==NULL) {
-          board_move_tile(b, cell_source, cell_target);
-          c--;
-          cell_source = cell_target;
-          cell_target = board_coords_to_index(row, c-1);
-          moved = 1;
-        }
-
-        if (c>0 && board_get_tile_value(b, cell_target) &&
-            board_get_tile_value(b, cell_target)==board_get_tile_value(b, cell_source) &&
-            b->can_grow[cell_target])
-        {
-          temp = (Tile*)malloc(sizeof(Tile));
-          *temp = tile_make(2*tile_get(board_get(b, cell_target)));
-          free(board_get(b, cell_target));
-          board_set(b, cell_target, temp);
-          board_set(b, cell_source, NULL);
-          b->can_grow[cell_target] = 0;
-          moved = 1;
-        }
-      }
-    }
-  }
-
-  board_grow_reset(b);
+  board_reset_grow(b);
   board_update_freepos(b);
 
   return moved;
@@ -352,63 +253,32 @@ int board_tile_left(Board *b)
 
 int board_tile_right(Board *b)
 {
-  int cell_target;
-  int cell_source;
-  int row, col;
-  int c;
-  Tile *temp;
-  int moved = 0;
-  
-  for (row=0; row<SIZE; row++) {
-    for (col=SIZE-2; col>=0; col--) {
+  int moved;
 
-      c = col;
+  board_rotate(b);
+  moved = board_tile_up(b);
+  board_rotate(b);
+  board_rotate(b);
+  board_rotate(b);
 
-      cell_source = board_coords_to_index(row, col);
-
-      if (board_get(b, cell_source)!=NULL) {
-
-        cell_target = board_coords_to_index(row, col+1);
-
-        while (c<SIZE-1 && board_get(b, cell_target)==NULL) {
-          board_move_tile(b, cell_source, cell_target);
-          c++;
-          cell_source = cell_target;
-          cell_target = board_coords_to_index(row, c+1);
-          moved = 1;
-        }
-
-        if (c<SIZE-1 && board_get_tile_value(b, cell_target) &&
-            board_get_tile_value(b, cell_target)==board_get_tile_value(b, cell_source) &&
-            b->can_grow[cell_target])
-        {
-          temp = (Tile*)malloc(sizeof(Tile));
-          *temp = tile_make(2*tile_get(board_get(b, cell_target)));
-          free(board_get(b, cell_target));
-          board_set(b, cell_target, temp);
-          board_set(b, cell_source, NULL);
-          b->can_grow[cell_target] = 0;
-          moved = 1;
-        }
-      }
-    }
-  }
-
-  board_grow_reset(b);
+  board_reset_grow(b);
   board_update_freepos(b);
 
   return moved;
 }
 
-int board_coords_to_index(int row, int col)
+int board_tile_down(Board *b)
 {
-  return col + row*SIZE;
-}
+  int moved;
 
-void board_grow_reset(Board *b)
-{
-  int i;
-  for (i=0; i<SIZE*SIZE; i++) {
-    b->can_grow[i] = 1;
-  }
+  board_rotate(b);
+  board_rotate(b);
+  moved = board_tile_up(b);
+  board_rotate(b);
+  board_rotate(b);
+
+  board_reset_grow(b);
+  board_update_freepos(b);
+
+  return moved;
 }

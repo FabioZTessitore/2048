@@ -75,10 +75,10 @@ void create_board_grid()
   gtk_grid_set_row_homogeneous (GTK_GRID(board_container), TRUE); 
   gtk_container_add(GTK_CONTAINER(window), board_container);
 
-  for (row=0; row<SIZE; row++) {
-    for (col=0; col<SIZE; col++) {
-      cell_index = col + row*SIZE;
-      tile_value = board_get_tile_value(&game_board, cell_index);
+  for (row=0; row<game_board.size; row++) {
+    for (col=0; col<game_board.size; col++) {
+      cell_index = col + row*game_board.size;
+      tile_value = tile_get(board_get(&game_board, cell_index));
       if (tile_value>0) {
         sprintf(msg, "%d", tile_value);
       } else {
@@ -100,10 +100,10 @@ void update_board_labels()
   int cell_index;
   char msg[80];
 
-  for (row=0; row<SIZE; row++) {
-    for (col=0; col<SIZE; col++) {
-      cell_index = col + row*SIZE;
-      tile_value = board_get_tile_value(&game_board, cell_index);
+  for (row=0; row<game_board.size; row++) {
+    for (col=0; col<game_board.size; col++) {
+      cell_index = col + row*game_board.size;
+      tile_value = tile_get(board_get(&game_board, cell_index));
       if (tile_value>0) {
         sprintf(msg, "%d", tile_value);
       } else {
@@ -121,7 +121,7 @@ static void
 activate (GtkApplication* app,
           gpointer        user_data)
 {
-  board_init(&game_board);
+  board_init(&game_board, 4);
   board_add_tile(&game_board);
   board_add_tile(&game_board);
 
