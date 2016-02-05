@@ -72,7 +72,7 @@ void board_init(Board *b)
   int i;
 
   random_init();
-  intlist_clear(&(b->freepos));
+  intlist_init(&(b->freepos), SIZE*SIZE);
 
   for (i=0; i<SIZE*SIZE; i++) {
     board_set(b, i, NULL);
@@ -99,6 +99,8 @@ void board_destroy(Board *b)
   for (i=0; i<SIZE*SIZE; i++) {
     board_destroy_tile(b, i);
   }
+
+  intlist_destroy(&(b->freepos));
 }
 
 void board_tile_dump(Board *b, int row, int col)
