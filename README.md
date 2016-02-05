@@ -107,18 +107,21 @@ int random_between(int min, int max);
 Il modulo `IntList` mette a disposizione una lista di interi
 da utilizzare per la gestione delle caselle libere della `Board`.
 
-Una `IntList` è l'insieme di un vettore di interi (di dimensione `MAX_SIZE`)
-e una variabile intera (`size`) che ne specifica la dimensione attuale.
+Una `IntList` è l'insieme di un vettore di interi (allocato dinamicamente
+quando la lista viene creata) e una variabile intera (`size`) che ne specifica la dimensione attuale.
 ```c
 /* int_list.h */
 
 typedef struct intlist {
   int values[MAX_SIZE];
+  int dimension;
   int size;
 } IntList;
 ```
 
 Una `IntList` mette a disposizione le seguenti funzionalità:
+- `intlist_init` (alloca la memoria)
+- `intlist_destroy` (libera la memoria)
 - `intlist_clear` (azzera la lista)
 - `intlist_push` (aggiunge un elemento in coda)
 - `intlist_get` (ritorna l'elemento scelto)

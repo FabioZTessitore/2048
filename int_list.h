@@ -1,8 +1,6 @@
 #ifndef INTLIST_H
 #define INTLIST_H
 
-#define MAX_SIZE 100
-
 /* IntList
  *
  * Una lista di interi
@@ -10,19 +8,36 @@
  * I valori possono essere inseriti in coda
  * e letti in qualsiasi ordine.
  *
- * Utilizzata per l'estrazione casuale di un elemento
- * tra quelli in lista.
+ * Utile per l'estrazione casuale di un elemento
+ * tra quelli inseriti in lista.
  */
 
 typedef struct intlist {
-  int values[MAX_SIZE];
+  int *values;
+  int dimension;
   int size;
 } IntList;
 
 
+/* intlist_init:
+ *
+ * inizializza la IntList creando
+ * un vettore di interi di lunghezza
+ * pari a dimension.
+ * Azzera size
+ */
+void intlist_init(IntList *il, int dimension);
+
+
+/* intlist_destroy:
+ *
+ * rilascia la memoria
+ */
+void intlist_destroy(IntList *il);
+
 /* intlist_clear:
  *
- * inizializza la IntList 'il' azzerando size,
+ * inizializza la IntList azzerando size,
  * (non cancella gli elementi della lista)
  */
 void intlist_clear(IntList *il);
@@ -49,7 +64,7 @@ int intlist_get(IntList *il, int index, int *value);
 
 /* intlist_length:
  *
- * restituisce la lunghezza della IntList,
+ * restituisce la lunghezza attuale della IntList,
  * (ritorna size, non ricalcola)
  */
 int intlist_length(IntList *il);

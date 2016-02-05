@@ -1,14 +1,17 @@
 #include <stdio.h>
 #include "int_list.h"
 
+#define MAX_SIZE 16
+
 int main()
 {
   IntList il;
 
   printf("IntList\n\n");
 
-  printf("Appena creata\n");
-  intlist_clear(&il);
+  printf("Inizializzazione della IntList ...\n");
+  intlist_init(&il, MAX_SIZE);
+  printf("IntList creata\n");
   intlist_dump(&il);
   putchar('\n');
 
@@ -35,6 +38,9 @@ int main()
     if ((i+1)%4==0) putchar('\n');
   }
   intlist_dump(&il);
+
+  printf("Libera la memoria ...\n");
+  intlist_destroy(&il);
 
   return 0;
 }
