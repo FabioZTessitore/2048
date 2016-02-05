@@ -3,8 +3,7 @@
 
 /* random
  *
- * wrapper attorno alle funzioni
- * per la generazione di numeri pseudo-casuali
+ * generazione di numeri pseudo-casuali
  */
 
 
