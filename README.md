@@ -108,7 +108,8 @@ Il modulo `IntList` mette a disposizione una lista di interi
 da utilizzare per la gestione delle caselle libere della `Board`.
 
 Una `IntList` è l'insieme di un vettore di interi (allocato dinamicamente
-quando la lista viene creata) e una variabile intera (`size`) che ne specifica la dimensione attuale.
+quando la lista viene creata), la dimensione allocata (`dimension`)
+e la dimensione attuale (`size`).
 ```c
 /* int_list.h */
 
