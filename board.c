@@ -3,13 +3,6 @@
 #include "board.h"
 #include "random.h"
 
-/* dimensione interna di una cella */
-#define BOARD_CELL_SIZE 8
-
-/* funzioni helper per la stampa */
-void board_print_hborder();
-void board_print_inner_blank();
-
 /* board_coords_to_index:
  *
  * converte una coppia di coordinate (row, col)
@@ -78,44 +71,14 @@ void board_dump(Board *b)
   int row, col;
 
   for (row=0; row<SIZE; row++) {
-    board_print_hborder();
-    board_print_inner_blank();
-    
     for (col=0; col<SIZE; col++) {
-      putchar('|');
       board_tile_dump(b, row, col);
     }
-    printf("|\n");
-
-    board_print_inner_blank();
+    putchar('\n');
   }
-  board_print_hborder();
   putchar('\n');
 
   intlist_dump(board_get_freepos(b));
-}
-
-void board_print_hborder()
-{
-  int i, j;
-
-  for (j=0; j<SIZE; j++) {
-    putchar('+');
-    for (i=0; i<BOARD_CELL_SIZE; i++) putchar('-');
-  }
-  putchar('+');
-  putchar('\n');
-}
-
-void board_print_inner_blank()
-{
-  int i, j;
-  for (j=0; j<SIZE; j++) {
-    putchar('|');
-    for (i=0; i<BOARD_CELL_SIZE; i++) putchar(' ');
-  }
-  putchar('|');
-  putchar('\n');
 }
 
 void board_set(Board *b, int cell_index, Tile *t)
