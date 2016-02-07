@@ -44,35 +44,42 @@ $ ./2048
 # L'angolo dello svilupparore
 
 L'elemento principale del modello di gioco è la `Board`. Una `Board` viene modellata come
-vettore di `SIZE`x`SIZE` puntatori a `Tile`.
+vettore di puntatori a `Tile`.
 
 ## Modulo `Tile`
 
-Una `Tile` è costituita soltanto dal suo valore.
+Una `Tile` è costituita soltanto dal suo valore e da una flag
+che specifica se la tessera può crescere di valore (se non lo ha già fatto
+durante il turno corrente).
 ```c
 /* tile.h */
 
 typedef struct tile {
   int value;
+  int can_grow;
 } Tile;
 ```
 
 Le funzionalità messe a disposizione sono:
-- `tile_make` (crea una tile, di valore pari a 2 o 4)
+- `tile_make` (crea una Tile)
+- `tile_set` (imposta il valore della Tile)
 - `tile_get` (restituisce il valore della Tile)
+- `tile_double` (raddoppia il valore della Tile)
+- `tile_reset_can_grow` (resetta la flag can_grow)
+- `tile_can_grow` (restituisce la flag can_grow)
 - `tile_dump` (stampa di debug)
 
 ## Modulo `Board`
 
-Una `Board` è costituita da un vettore di puntatori a `Tile` (dimensione SIZE x SIZE)
-e da una lista di posizioni libere.
+Una `Board` è costituita da un vettore di puntatori a `Tile` (visualizzata
+come matrice quadrata di lato `size`) e da una lista di posizioni libere.
 ```c
 /* board.h */
 
 typedef struct board {
-  Tile *cells[SIZE*SIZE];
+  Tile **cells;
+  int size;
   IntList freepos;
-  ...
 } Board;
 ```
 Appena viene creata una nuova `Board` le `cells` vengono impostate a `NULL`
@@ -108,14 +115,14 @@ Il modulo `IntList` mette a disposizione una lista di interi
 da utilizzare per la gestione delle caselle libere della `Board`.
 
 Una `IntList` è l'insieme di un vettore di interi (allocato dinamicamente
-quando la lista viene creata), la dimensione allocata (`dimension`)
+quando la lista viene creata), la dimensione allocata (`capacity`)
 e la dimensione attuale (`size`).
 ```c
 /* int_list.h */
 
 typedef struct intlist {
-  int values[MAX_SIZE];
-  int dimension;
+  int *values;
+  int capacity;
   int size;
 } IntList;
 ```
@@ -127,4 +134,5 @@ Una `IntList` mette a disposizione le seguenti funzionalità:
 - `intlist_push` (aggiunge un elemento in coda)
 - `intlist_get` (ritorna l'elemento scelto)
 - `intlist_length` (ritorna la lunghezza attuale della lista)
+- `intlist_capacity` (ritorna la dimensione allocata della IntList)
 - `intlist_dump` (stampa di debug)
