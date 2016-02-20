@@ -1,27 +1,25 @@
+/* test_int_list.c */
+
 #include <stdio.h>
 #include "int_list.h"
 
 int main()
 {
   IntList il;
-  int capacity;
+  int capacity = 10;
+
   int i;
 
   printf("IntList\n\n");
 
-  do {
-    printf("Numero di elementi da allocare (0-100)\n");
-    printf("? ");
-    scanf("%d", &capacity);
-  } while (capacity<0 || capacity>100);
-
+  printf("Crea una IntList di %d elementi\n", capacity);
   printf("Inizializzazione della IntList ...\n");
   intlist_init(&il, capacity);
   printf("IntList creata\n");
   intlist_dump(&il);
   putchar('\n');
 
-  printf("Aggiunge elementi\n");
+  printf("Aggiunge elementi da 1 a %d\n", capacity);
   for (i=0; i<capacity; i++) {
     intlist_push(&il, i+1);
   }
@@ -33,19 +31,19 @@ int main()
   intlist_dump(&il);
   putchar('\n');
 
-  printf("Check for IntList Overflow\n");
+  printf("IntList Overflow\n");
   for (i=0; i<capacity+capacity; i++) {
     if (intlist_push(&il, i) < 0) {
       break;
     }
-
     printf("aggiunto elemento %3d/%d    ", i+1, capacity);
     if ((i+1)%4==0) putchar('\n');
   }
   intlist_dump(&il);
 
-  printf("Libera la memoria ...\n");
+  printf("Libera la memoria ...");
   intlist_destroy(&il);
+  printf(" fatto\n\n");
 
   return 0;
 }

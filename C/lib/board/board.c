@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
-#include "random.h"
+#include "../random/random.h"
+
+/******************************************************
+ * Funzioni di utilita' per il modulo Board
+ * ****************************************************/
 
 /* board_destroy_tile:
  *
@@ -21,9 +25,19 @@ void board_update_freepos(Board*);
  */
 void board_reset_grow(Board*);
 
+/******************************************************
+ * Fine funzioni di utilita' per il modulo Board
+ * ****************************************************/
+
+
 void board_init(Board *b, int size)
 {
   int i;
+
+  if (size<=0) {
+    fprintf(stderr, "board_init: size deve essere positiva\n");
+    exit(-1);
+  }
 
   b->size = size;
   intlist_init(&(b->freepos), size*size);
@@ -62,10 +76,11 @@ void board_dump(Board *b)
 {
   int row, col;
   int cell_index;
+  int freepos;    /* numero di celle libere */
 
   board_update_freepos(b);
 
-  int freepos = board_get_freepos(b)->size;
+  freepos = board_get_freepos(b)->size;
   printf("Numero di celle libere (mediante get_freepos()): %d\n", freepos);
   printf("Ci sono celle libere? %s\n", board_some_cell_empty(b) ? "si" : "no");
 
@@ -77,13 +92,17 @@ void board_dump(Board *b)
     }
     putchar('\n');
   }
-  putchar('\n');
 
   intlist_dump(board_get_freepos(b));
 }
 
 void board_set(Board *b, int cell_index, Tile *t)
 {
+  if (b->cells[cell_index]!=NULL && t!=NULL) {
+    fprintf(stderr, "board_set: tentativo di impostare una Tile su posizione non libera\n");
+    exit(-1);
+  }
+
   b->cells[cell_index] = t;
   board_update_freepos(b);
 }
@@ -116,17 +135,17 @@ int board_some_cell_empty(Board *b)
   return ( intlist_length(board_get_freepos(b)) > 0 );
 }
 
-void board_move_tile(Board *b, int cell_source, int cell_target)
+void board_move_tile(Board *b, int cell_src, int cell_dst)
 {
-  if (board_get(b, cell_target)!=NULL) {
+  if (board_get(b, cell_dst)!=NULL) {
     fprintf(stderr, "board.c\n"
         "board_move_tile\n"
         "cella target non vuota\n");
     exit(-1);
   }
 
-  board_set(b, cell_target, board_get(b, cell_source));
-  board_set(b, cell_source, NULL);
+  board_set(b, cell_dst, board_get(b, cell_src));
+  board_set(b, cell_src, NULL);
 
   board_update_freepos(b);
 }
@@ -137,13 +156,14 @@ void board_add_tile(Board *b)
   int index_max = (b->freepos).size;
   int index = random_between(index_min, index_max);
   int cell_index;
+  Tile *t;
   
   if (!intlist_get(&(b->freepos), index, &cell_index)) {
     fprintf(stderr, "board.c\nboard_add_tile\nindice posizione libera non valido");
     exit(-1);
   }
 
-  Tile *t = (Tile*)malloc(sizeof(Tile));
+  t = (Tile*)malloc(sizeof(Tile));
   *t = tile_make((random_between(0, 100) < 10) ? 4 : 2);
 
   board_set(b, cell_index, t);
@@ -153,14 +173,16 @@ void board_rotate(Board *b)
 {
   int row, col, cell_index;
   int qrow, qcol;
-  Tile *q[b->size][b->size];
+  const int size = b->size;
+  Tile *q[size][size];
 
-  cell_index = b->size*b->size-1;
+  cell_index = size*size-1;
   qrow = 0;
-  qcol = b->size-1;
-  for (row=b->size-1; row>=0; row--) {
-    for (col=b->size-1; col>=0; col--) {
+  qcol = size-1;
+  for (row=size-1; row>=0; row--) {
+    for (col=size-1; col>=0; col--) {
       q[qrow][qcol] = board_get(b, cell_index);
+      board_set(b, cell_index, NULL);
       qrow++;
       cell_index--;
     }
@@ -169,8 +191,8 @@ void board_rotate(Board *b)
   }
 
   cell_index = 0;
-  for (row=0; row<b->size; row++) {
-    for (col=0; col<b->size; col++) {
+  for (row=0; row<size; row++) {
+    for (col=0; col<size; col++) {
       board_set(b, cell_index, q[row][col]);
       cell_index++;
     }

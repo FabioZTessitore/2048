@@ -5,7 +5,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
-#include "board.h"
+#include "../lib/board/board.h"
 
 #define UP 1
 #define DOWN 2
@@ -117,17 +117,8 @@ int welcome(int size_min, int size_max)
   col = (COLS-msg_len)/2;
   mvprintw(row+8, col, msg);
   mvscanw(row+8, col+msg_len+2, "%d", &size);
-  /*
-  msg = "(Premi un tasto per iniziare)";
-  msg_len = strlen(msg);
-  col = (COLS-msg_len)/2;
-  mvprintw(row+8, col, msg);
-  */
 
   refresh();
-  /*
-  getch();
-  */
   clear();
 
   return size;

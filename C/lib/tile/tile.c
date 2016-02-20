@@ -1,3 +1,5 @@
+/* tile.c */
+
 #include <stdio.h>
 #include "tile.h"
 
@@ -13,7 +15,7 @@ Tile tile_make(int value)
 
 int tile_get(Tile *t)
 {
-  return t ? t->value : 0;
+  return (t!=NULL) ? t->value : 0;
 }
 
 void tile_set(Tile *t, int value)

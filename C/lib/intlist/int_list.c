@@ -1,14 +1,25 @@
+/* int_list.c */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "int_list.h"
 
 void intlist_init(IntList *il, int capacity)
 {
+  if (il==NULL) {
+    fprintf(stderr, "intlist_init: puntatore a IntList non valido\n");
+    exit(-1);
+  }
+  if (capacity <= 0) {
+    fprintf(stderr, "intlist_init: capacity deve essere positivo\n");
+    exit(-1);
+  }
+
   il->size = 0;
   il->capacity = capacity;
   il->values = (int*)malloc(sizeof(int)*capacity);
   if (!il->values) {
-    fprintf(stderr, "intlist_init: impossibile allocare memoria");
+    fprintf(stderr, "intlist_init: impossibile allocare memoria\n");
     exit(-1);
   }
 }
@@ -17,7 +28,7 @@ void intlist_destroy(IntList *il)
 {
   il->size = 0;
   il->capacity = 0;
-  if (il->values) {
+  if (il->values!=NULL) {
     free(il->values);
     il->values = NULL;
   }

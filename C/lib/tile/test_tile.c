@@ -1,12 +1,15 @@
+/* test_tile.c */
+
 #include <stdio.h>
 #include "tile.h"
 
 int main()
 {
   int value = 42;
-  Tile a_tile = tile_make(value);
+  Tile a_tile;
 
-  printf("Ho creato una tile con valore %d\n", value);
+  printf("Crea una Tile con valore %d\n", value);
+  a_tile = tile_make(value);
   tile_dump(&a_tile);
   printf("\n\n");
 

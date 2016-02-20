@@ -1,3 +1,5 @@
+/* int_list.h */
+
 #ifndef INTLIST_H
 #define INTLIST_H
 
@@ -7,9 +9,6 @@
  *
  * I valori possono essere inseriti in coda
  * e letti in qualsiasi ordine.
- *
- * Utile per l'estrazione casuale di un elemento
- * tra quelli inseriti in lista.
  */
 
 typedef struct intlist {
@@ -21,31 +20,32 @@ typedef struct intlist {
 
 /* intlist_init:
  *
- * inizializza la IntList creando
- * un vettore di interi di lunghezza
- * pari a capacity.
- * Azzera size
+ * inizializza la IntList creando un vettore di
+ * interi di lunghezza pari a capacity e
+ * azzera size
  */
 void intlist_init(IntList *il, int capacity);
 
 
 /* intlist_destroy:
  *
- * rilascia la memoria
+ * rilascia la memoria allocata
+ * per il vettore di interi values
  */
 void intlist_destroy(IntList *il);
+
 
 /* intlist_clear:
  *
  * inizializza la IntList azzerando size,
- * (non cancella gli elementi della lista)
+ * (non cancella realmente gli elementi della lista)
  */
 void intlist_clear(IntList *il);
 
 
 /* intlist_push:
  *
- * aggiunge value in coda alla IntList 'il'
+ * aggiunge value in coda alla IntList
  * e ritorna la nuova dimensione size.
  * Se non e' possibile inserire l'elemento
  * perche' la lista e' piena ritorna -1

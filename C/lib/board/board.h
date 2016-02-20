@@ -1,13 +1,15 @@
+/* board.h */
+
 #ifndef BOARD_H
 #define BOARD_H
 
 /* Board
  *
- * una scacchiera di tessere
+ * la scacchiera del gioco 2048
  */
 
-#include "int_list.h"
-#include "tile.h"
+#include "../intlist/int_list.h"
+#include "../tile/tile.h"
 
 typedef struct board {
   Tile **cells;             /* la scacchiera vera e propria
@@ -21,7 +23,10 @@ typedef struct board {
                                Ogni 'cella' punta ad una Tile se presente
                                in quella posizione oppure vale NULL.
                             */
-  int size;                 /* Dimensione lineare della board */
+
+  int size;                 /* Dimensione lineare della board,
+                               il vettore cells avra' dimensione (size x size)
+                             */
 
   IntList freepos;          /* la lista delle posizioni libere sulla scacchiera */
 } Board;
@@ -79,11 +84,11 @@ IntList *board_get_freepos(Board*);
 
 /* board_move_tile:
  *
- * sposta una Tile dalla posizione di indice cell_source
- * alla posizione di indice cell_target.
- * La cella di posizione cell_target DEVE essere vuota
+ * sposta una Tile dalla posizione di indice cell_src
+ * alla posizione di indice cell_dst.
+ * La cella di posizione cell_dst DEVE essere vuota
  */
-void board_move_tile(Board*, int cell_source, int cell_target);
+void board_move_tile(Board*, int cell_src, int cell_dst);
 
 
 /* board_add_tile:

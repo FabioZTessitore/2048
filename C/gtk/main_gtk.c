@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include "board.h"
+#include "../lib/board/board.h"
 
 Board game_board;
 GtkWidget *window;

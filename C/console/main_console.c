@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "board.h"
+#include "../lib/board/board.h"
 
 #define UP 1
 #define DOWN 2
@@ -13,7 +13,6 @@
 
 void clear_screen();
 int user_choice();
-
 void stampa_scacchiera(Board *b);
 void stampa_lato_orizzontale(int, int);
 
