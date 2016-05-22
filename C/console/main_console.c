@@ -57,7 +57,7 @@ int main()
           moved = board_tile_right(&game_board);
           break;
         default:
-          fprintf(stderr, "input non valido, non avrebbe dovuto succedere\n");
+          fprintf(stderr, "input non valido, non doveva succedere\n");
           exit(-1);
           break;
       };
