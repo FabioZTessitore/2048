@@ -9,15 +9,6 @@ PROGRAM=2048
 main_gtk.o: main_gtk.c
 	$(CC) -c `pkg-config --cflags gtk+-3.0` -o $@ $^
 
-board.o:
-	cd ../lib/board; make board.o
-random.o:
-	cd ../lib/random; make random.o
-tile.o:
-	cd ../lib/tile; make tile.o
-int_list.o:
-	cd ../lib/intlist; make int_list.o
-
 clean:
 	cd ../lib/random; make clean
 	cd ../lib/tile; make clean

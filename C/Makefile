@@ -2,42 +2,36 @@ CFLAGS=-Wall -ansi
 LDFLAGS=-lncurses
 PROGRAM=2048
 
-2048_gtk: int_list.o random.o tile.o board.o main_gtk.o
-	$(CC) -o $(PROGRAM) $^ `pkg-config --libs gtk+-3.0`
+2048_ncurses:
+	cd ./ncurses && make && cp ./2048 ../
 
-2048_ncurses: int_list.o random.o tile.o board.o main_ncurses.o
-	$(CC) $(LDFLAGS) $^ -o $(PROGRAM)
+2048_gtk:
+	cd ./gtk && make && cp ./2048 ../
 
-2048_console: int_list.o random.o tile.o board.o main_console.o
-	$(CC) $^ -o $(PROGRAM)
+2048_console:
+	cd ./console && make && cp ./2048 ../
 
-test: test_int_list test_tile test_board
+test: test_random test_int_list test_tile test_board
 
-test_board: test_board.o board.o tile.o int_list.o random.o
-	$(CC) -o $@ $^
-test_board.o: test_board.c
-
-test_tile: test_tile.o tile.o
-	$(CC) -o $@ $^
-test_tile.o: test_tile.c
-
-test_int_list: test_int_list.o int_list.o
-	$(CC) -o $@ $^
-
-test_int_list.o: test_int_list.c
-
-main_gtk.o: main_gtk.c
-	$(CC) -c `pkg-config --cflags gtk+-3.0` -o $@ $^
-
-main_ncurses.o: main_ncurses.c
-main_console.o: main_console.c
-random.o: random.c
-board.o: board.c
-tile.o: tile.c
-int_list.o: int_list.c
+test_board:
+	cd ./lib/board && make test_board && cp ./test_board ../../
+test_tile:
+	cd ./lib/tile && make test_tile && cp ./test_tile ../../
+test_int_list:
+	cd ./lib/intlist && make test_int_list && cp ./test_int_list ../../
+test_random:
+	cd ./lib/random && make test_random && cp ./test_random ../../
 
 clean:
-	rm -f *.o test_int_list test_tile test_board
+	rm -f test_board test_random test_int_list test_tile
+	cd ./lib/board && make clean && make uninstall;
+	cd ./lib/intlist && make clean && make uninstall;
+	cd ./lib/random && make clean && make uninstall;
+	cd ./lib/tile && make clean && make uninstall;
+	cd ./console && make clean && make uninstall;
+	cd ./ncurses && make clean && make uninstall;
+	cd ./gtk && make clean && make uninstall;
+	rm -f *.o
 
 uninstall:
 	rm -f 2048
