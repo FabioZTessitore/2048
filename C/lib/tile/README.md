@@ -2,26 +2,6 @@
 
 Il modulo `Tile` definisce una tessera del gioco 2048.
 
-Una `Tile` è costituita soltanto dal suo valore e da una flag
-che specifica se la tessera può crescere di valore
-(se non lo ha già fatto durante il turno corrente).
-
-## Installazione
-
-### Download
-Assicurati di aver effettuato il download della repository:
-```bash
-$ git clone https://github.com/FabioZTessitore/2048.git
-```
-### Compilazione
-```bash
-$ make test_tile
-```
-## Esecuzione
-```bash
-$ ./test_tile
-```
-
 # L'angolo dello svilupparore
 
 ## Modulo `Tile`

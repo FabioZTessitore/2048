@@ -1,31 +1,13 @@
 # Il modulo `IntList`
 
-Una `IntList` è l'insieme composto da un vettore di interi (allocato dinamicamente
-quando la lista viene creata), la dimensione allocata (`capacity`)
-e la dimensione attuale (`size`).
+Il modulo `IntList` mette a disposizione una lista di interi con la possibilità
+di aggiungere elementi in coda, ma di leggere (non prelevare) da una posizione qualsiasi.
 
-Permette l'inserimento in coda di valori interi e il recupero da posizione qualsiasi.
-
-## Installazione
-
-### Download
-Assicurati di aver effettuato il download della repository:
-```bash
-$ git clone https://github.com/FabioZTessitore/2048.git
-```
-### Compilazione
-```bash
-$ make test_int_list
-```
-## Esecuzione
-```bash
-$ ./test_int_list
-```
 
 # L'angolo dello svilupparore
 
 Una `IntList` è implementata come struct contenente un vettore di interi
-(allocato dinamcamente) `values`, la dimensione allocata `capacity` e la
+allocato dinamcamente `values`, la dimensione allocata `capacity` e la
 dimensione effettivamente utilizzata `size`.
 
 ```c

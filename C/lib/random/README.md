@@ -1,28 +1,15 @@
 # Il modulo `random`
 
-Il modulo `random` si occupa di inizializzare il generatore
-di numeri pseudocasuali e della generazione di numeri compresi in un intervallo.
+Il modulo `random` si occupa della generazione di numeri pseudocasuali.
 
-## Installazione
-
-### Download
-Assicurati di aver effettuato il download della repository:
-```bash
-$ git clone https://github.com/FabioZTessitore/2048.git
-```
-### Compilazione
-```bash
-$ make test_random
-```
-## Esecuzione
-```bash
-$ ./test_random
-```
 
 ## L'angolo dello sviluppatore
+
+### random_init()
+
 Prima di utilizzare l'unica funzione messa a disposizione dal modulo
 `random` bisogna inizializzare il generatore di numeri
-pseudocasuali. Dell'operazione si occupa `random_init`.
+pseudocasuali mediante `random_init()`.
 ```c
 /* random.h */
 
@@ -34,8 +21,10 @@ pseudocasuali. Dell'operazione si occupa `random_init`.
 void random_init();
 ```
 
+### random_between()
+
 Per generare numeri compresi nell'intervallo [min, max[ il
-modulo mette a disposizione `random_between`:
+modulo mette a disposizione `random_between()`:
 ```c
 /* random.h */
 
