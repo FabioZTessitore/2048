@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
-#include "../random/random.h"
+#include "random.h"
 
 /******************************************************
  * Funzioni di utilita' per il modulo Board

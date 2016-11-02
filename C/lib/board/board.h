@@ -8,8 +8,8 @@
  * la scacchiera del gioco 2048
  */
 
-#include "../intlist/int_list.h"
-#include "../tile/tile.h"
+#include "int_list.h"
+#include "tile.h"
 
 typedef struct board {
   Tile **cells;             /* la scacchiera vera e propria

@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../lib/board/board.h"
+#include "board.h"
 
 #define UP 1
 #define DOWN 2
