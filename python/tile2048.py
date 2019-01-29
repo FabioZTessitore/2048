@@ -1,39 +1,51 @@
 # tile2048.py
 
-# una tessera del gioco 2048
+# A Tile for 2048 game
+#
+# A Tile2048 is a Tile (has a value)
+# and store the flag 'can_grow'.
+# When the flag is False, the Tile is
+# locked and cannot be modified
 
 from tile import Tile
 
 class Tile2048(Tile):
-    def __init__(self, value):
-        Tile.__init__(self, value)
+    def __init__(self, initialValue):
+        Tile.__init__(self, initialValue)
         self.can_grow = True
 
-    def doubleMe(self):
+    def double(self):
         self.value *= 2
+        self.lock()
+
+    def lock(self):
         self.can_grow = False
 
-    def resetCanGrow(self):
+    def unlock(self):
         self.can_grow = True
 
-    def canGrow(self):
-        return self.can_grow
+    def isLocked(self):
+        return self.can_grow == False
 
     def __str__(self):
         return Tile.__str__(self) + \
-                "\ncan_grow: " + str(self.can_grow)
+                "\nlocked: " + str(self.isLocked())
 
 if __name__=='__main__':
+    print("Creating a Tile with value 42")
+
     t = Tile2048(42)
+
+    print("Tile string repr:")
     print(t)
 
-    print ("raddioppio")
-    t.doubleMe()
+    print ("\nDoubling ...")
+    t.double()
     print(t)
 
-    print("can grow?")
-    print(t.canGrow())
+    print("\nIs Locked?")
+    print(t.isLocked())
 
-    print("reset can_grow")
-    t.resetCanGrow()
+    print("\nUnlock")
+    t.unlock()
     print(t)

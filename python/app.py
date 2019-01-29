@@ -1,6 +1,6 @@
 # app.py
 
-# il gioco 2048 nella versione python-tkinter
+# 2048 game with python3-tkinter
 
 from tkinter import *
 from tkinter import ttk
@@ -14,14 +14,14 @@ class BoardSizeDialog(Toplevel):
 
         Toplevel.__init__(self, parent)
         self.protocol("WM_DELETE_WINDOW", parent.destroy)
-        self.title('2048 - Dimensione della Board')
+        self.title('2048 - Insert Board Size')
         mainframe = ttk.Frame(self, padding="10")
         mainframe.grid()
 
-        ttk.Label(mainframe, text="Dimensione della Board:").grid(row=0, column=0)
+        ttk.Label(mainframe, text="Board Size:").grid(row=0, column=0)
         boardSizeSpin = Spinbox(mainframe, from_=2, to=15, textvariable=boardSize)
         boardSizeSpin.grid(row=1, column=0)
-        ttk.Button(mainframe, text="Inizia a giocare", command=self.onStart).grid(sticky=(E, W))
+        ttk.Button(mainframe, text="Play", command=self.onStart).grid(sticky=(E, W))
 
         for child in mainframe.winfo_children():
             child.grid_configure(padx=5, pady=5)
@@ -48,13 +48,13 @@ class App(Tk):
     def configure(self):
         boardSize = int(self.boardSize.get())
         self.board = Board2048(boardSize)
-        self.board.addTile()
-        self.board.addTile()
+        self.board.addRandomTile()
+        self.board.addRandomTile()
         self.tileLabels = []
         for row in range(boardSize):
             for col in range(boardSize):
                 cellIndex = self.board.size * row + col
-                tile = self.board.get(cellIndex)
+                tile = self.board.getTile(cellIndex)
                 labelContent = StringVar()
                 if tile:
                     labelContent.set(tile.get())
@@ -80,12 +80,12 @@ class App(Tk):
             moved = self.board.tileDown()
 
         if moved:
-            self.board.addTile()
+            self.board.addRandomTile()
             self.updateLabelText()
 
     def updateLabelText(self):
         for index, label in enumerate(self.tileLabels):
-            tile = self.board.get(index)
+            tile = self.board.getTile(index)
             if tile:
                 label.set(tile.get())
             else:

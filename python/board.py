@@ -1,6 +1,9 @@
 # board.py
 
-# una generica scacchiera
+# A generic board
+#
+# A board is a square of positions.
+# Every position can be empty or occupied by a Tile
 
 from tile import Tile
 
@@ -10,72 +13,77 @@ class Board:
             raise ValueError('Board.__init__: size must be a positive integer')
 
         self.size = size
-        self.cells = []
-        self.freePos = []
+        numberOfPositions = size * size
 
-        for cellIndex in range(size*size):
-            self.cells.append(None)
-            self.freePos.append(cellIndex)
+        # start with empty positions
+        self.positions = [None] * numberOfPositions
 
-    def set(self, cellIndex, tile):
-        if self.cells[cellIndex] and tile:
-            raise ValueError('Board.set: tentativo di impostare una Tile su posizione non libera')
+        # list of empty positions
+        self.updateEmptyPositions()
 
-        self.cells[cellIndex] = tile
-        self.updateFreePos()
+    def insertTile(self, index, tile):
+        if self.positions[index]:
+            raise ValueError('Board.insert: position not empty')
 
-    def get(self, cellIndex):
-        return self.cells[cellIndex]
+        self.positions[index] = tile
+        self.updateEmptyPositions()
 
-    def updateFreePos(self):
-        self.freePos = []
-        for cellIndex in range(self.size*self.size):
-            if self.cells[cellIndex]==None:
-                self.freePos.append(cellIndex)
+    def removeTile(self, index):
+        self.positions[index] = None
+        self.updateEmptyPositions()
 
-    def someEmptyCell(self):
-        return len(self.freePos)>0
+    def getTile(self, index):
+        return self.positions[index]
 
-    def moveTile(self, cell_src, cell_dst):
-        if self.cells[cell_dst]!=None:
-            raise ValueError('Board.moveTile: tentativo di accedere ad una cella non vuota')
+    def updateEmptyPositions(self):
+        self.emptyPositions = [index for index in range(self.size**2) if self.positions[index]==None]
 
-        self.set(cell_dst, self.get(cell_src))
-        self.set(cell_src, None)
+    def someEmptyPosition(self):
+        return len(self.emptyPositions)>0
 
-        self.updateFreePos()
+    def positionIsEmpty(self, index):
+        return self.positions[index] == None
+
+    def moveTile(self, indexFrom, indexTo):
+        if self.positionIsEmpty(indexTo):
+            self.insertTile(indexTo, self.getTile(indexFrom))
+            self.removeTile(indexFrom)
 
     def __str__(self):
-        freepos_length = len(self.freePos)
+        emptyPositionsLen = len(self.emptyPositions)
 
-        s = "Dimensione Board: " + str(self.size)
-        s += "\nNumero di celle libere (mediante freePos): " + str(freepos_length)
-        s += "\nCi sono celle libere? "
-        if self.someEmptyCell():
-            s += "si"
+        s = "Board Size: " + str(self.size)
+        s += "\nNumber of Empty Positions: " + str(emptyPositionsLen)
+        s += "\nAny Empty Position? "
+        if self.someEmptyPosition():
+            s += "yes"
         else:
             s += "no"
-        s += "\nIndici celle libere:\n"
-        s += str(self.freePos)
-        s += "\nDump celle:\n"
-        s += str(self.cells)
+        s += "\nEmpty Positions Indices: " + str(self.emptyPositions)
+        s += "\nDump positions:\n"
+        s += str(self.positions)
 
         return s
 
 
 if __name__=='__main__':
-    size = 4
+    size = 3
+
+    print("Creating an empty Board")
+    game_board = Board(size)
+    print(game_board)
+
+    print("\nCreating a Board")
     game_board = Board(size)
     for index in range(size*size):
-        t = Tile(index+1)
-        game_board.set(index, t)
+        tile = Tile(index+1)
+        game_board.insertTile(index, tile)
     print(game_board)
-    del game_board
 
+    print("\nCreating a Board with a Tile at position 0")
     game_board = Board(size)
-    t = Tile(42)
-    game_board.set(0, t)
-    print(game_board)
-    print("move a tile")
+    tile = Tile(42)
+    game_board.insertTile(0, tile)
+    print("Move the tile to position 1")
     game_board.moveTile(0, 1)
     print(game_board)
